@@ -1,0 +1,51 @@
+﻿@model IEnumerable<HospitalSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Booked Appointments";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Booked Appointments</h2>
+        <a asp-controller="Doctors" asp-action="Index" class="btn btn-primary">Book New Appointment</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-4">
+            No appointments have been booked yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover table-striped align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Doctor Name</th>
+                        <th>Specialization</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@item.PatientName</td>
+                            <td>@(item.Doctor?.Name ?? "N/A")</td>
+                            <td>
+                                <span class="badge bg-info text-dark">
+                                    @(item.Doctor?.Specialization ?? "N/A")
+                                </span>
+                            </td>
+                            <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                            <td>@DateTime.Today.Add(item.Time).ToString("hh:mm tt")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

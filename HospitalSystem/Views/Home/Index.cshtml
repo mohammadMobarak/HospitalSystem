@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center py-5 my-5">
+    <h1 class="display-4 fw-bold text-primary mb-3">Welcome to CarePlus Hospital</h1>
+    <p class="lead text-secondary mb-4">Fast, easy, and reliable healthcare management at your fingertips.</p>
+
+    <div class="d-flex justify-content-center gap-3">
+        <!-- Button 1: Make Appointment (Redirects to Doctors Page) -->
+        <a asp-controller="Doctors" asp-action="Index" class="btn btn-primary btn-lg px-4 shadow-sm">
+            Make Appointment
+        </a>
+
+        <!-- Button 2: View Appointments (Redirects to Appointments List) -->
+        <a asp-controller="Appointments" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4 shadow-sm">
+            View Appointments
+        </a>
+    </div>
+</div>

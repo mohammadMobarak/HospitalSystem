@@ -1,0 +1,107 @@
+﻿@model HospitalSystem.Models.DoctorListViewModel
+
+@{
+    ViewData["Title"] = "Our Doctors";
+}
+
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Available Doctors</h2>
+
+    <!-- Search & Filter Form -->
+    <form method="get" asp-controller="Doctors" asp-action="Index" class="card card-body bg-light mb-4 shadow-sm">
+        <div class="row g-3 align-items-center">
+
+            <!-- Filter by Name -->
+            <div class="col-md-5">
+                <label class="form-label fw-bold">Doctor Name</label>
+                <input type="text" name="searchName" value="@Model.SearchName" class="form-control" placeholder="Search by name..." />
+            </div>
+
+            <!-- Filter by Specialization -->
+            <div class="col-md-5">
+                <label class="form-label fw-bold">Specialization</label>
+                <select name="specialization" class="form-select">
+                    <option value="">All Specializations</option>
+                    @foreach (var spec in Model.Specializations)
+                    {
+                        <option value="@spec" selected="@(spec == Model.SelectedSpecialization ? "selected" : null)">
+                            @spec
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <!-- Filter & Reset Buttons -->
+            <div class="col-md-2 d-flex align-items-end gap-2 pt-4">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+                <a asp-controller="Doctors" asp-action="Index" class="btn btn-outline-secondary w-100">Reset</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Doctors Card Grid -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @if (Model.Doctors.Any())
+        {
+            @foreach (var doctor in Model.Doctors)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <!-- Fallback placeholder image if ImageUrl is empty/missing -->
+                        <img src="@(string.IsNullOrEmpty(doctor.ImageUrl) ? "https://via.placeholder.com/300x200?text=Doctor" : doctor.ImageUrl)"
+                             class="card-img-top" alt="@doctor.Name" style="height: 220px; object-fit: cover;" />
+
+                        <div class="card-body text-center d-flex flex-column">
+                            <h5 class="card-title text-primary">@doctor.Name</h5>
+                            <span class="badge bg-info text-dark mb-3 mx-auto px-3 py-2 fs-6">@doctor.Specialization</span>
+
+                            <div class="mt-auto">
+                                <a asp-controller="Appointments" asp-action="Create" asp-route-doctorId="@doctor.DoctorId" class="btn btn-success w-100">
+                                    Book Appointment
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted fs-5">No doctors found matching your criteria.</p>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-item page-link" asp-controller="Doctors" asp-action="Index"
+                       asp-route-searchName="@Model.SearchName"
+                       asp-route-specialization="@Model.SelectedSpecialization"
+                       asp-route-page="@(Model.CurrentPage - 1)">Previous</a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-controller="Doctors" asp-action="Index"
+                           asp-route-searchName="@Model.SearchName"
+                           asp-route-specialization="@Model.SelectedSpecialization"
+                           asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-controller="Doctors" asp-action="Index"
+                       asp-route-searchName="@Model.SearchName"
+                       asp-route-specialization="@Model.SelectedSpecialization"
+                       asp-route-page="@(Model.CurrentPage + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>

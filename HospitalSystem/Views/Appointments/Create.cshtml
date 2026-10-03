@@ -1,0 +1,65 @@
+﻿@model HospitalSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container my-5" style="max-width: 600px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white py-3">
+            <h4 class="mb-0 text-center">Book an Appointment</h4>
+        </div>
+        <div class="card-body p-4">
+
+            <!-- Doctor Summary Info -->
+            <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <strong>Doctor:</strong> @ViewBag.DoctorName
+                </div>
+                <div>
+                    <span class="badge bg-secondary">@ViewBag.Specialization</span>
+                </div>
+            </div>
+
+            <form asp-controller="Appointments" asp-action="Create" method="post">
+                <!-- Hidden Foreign Key for DoctorId -->
+                <input type="hidden" asp-for="DoctorId" />
+
+                <!-- Patient Name Field -->
+                <div class="mb-3">
+                    <label asp-for="PatientName" class="form-label fw-bold">Patient Name</label>
+                    <input asp-for="PatientName" class="form-control" placeholder="Enter full name" />
+                    <span asp-validation-for="PatientName" class="text-danger small"></span>
+                </div>
+
+                <!-- Appointment Date Field -->
+                <div class="mb-3">
+                    <label asp-for="Date" class="form-label fw-bold">Appointment Date</label>
+                    <input asp-for="Date" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="Date" class="text-danger small"></span>
+                </div>
+
+                <!-- Appointment Time Field (Enforces 30 min intervals & 09:00 AM to 04:30 PM) -->
+                <div class="mb-4">
+                    <label asp-for="Time" class="form-label fw-bold">Appointment Time</label>
+                    <input asp-for="Time" type="time" class="form-control" min="09:00" max="16:30" step="1800" />
+                    <span asp-validation-for="Time" class="text-danger small"></span>
+                    <small class="form-text text-muted d-block mt-1">Available slots: 09:00 AM – 04:30 PM (every 30 mins, Sun–Thu)</small>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success flex-fill">Confirm Appointment</button>
+                    <a asp-controller="Doctors" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
